@@ -16,6 +16,8 @@ public class MoveCameraSlightlyScript : MonoBehaviour
     [HideInInspector]
     public Vector3 Destination;
 
+    private Vector3 velocity = Vector3.zero;
+
     void Start()
     {
         Destination = new Vector3(0f, 0f, -10f);
@@ -28,13 +30,14 @@ public class MoveCameraSlightlyScript : MonoBehaviour
 
     void MoveCameraSlightly()
     {
-        Vector3 SmoothedPos = Vector3.Lerp(transform.position, Destination, SmoothSpeed);
-        SmoothedPos = Vector3.Lerp(transform.position, SmoothedPos, SmoothSpeed);
-        SmoothedPos = Vector3.Lerp(transform.position, SmoothedPos, SmoothSpeed);
-
-        transform.position = SmoothedPos;
-
-        if(Vector3.Distance(transform.position,Destination) < MinResetDistance)
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            Destination,
+            ref velocity,
+            SmoothSpeed
+        );
+    
+        if (Vector3.Distance(transform.position, Destination) < MinResetDistance)
         {
             GetNewDestination();
         }
